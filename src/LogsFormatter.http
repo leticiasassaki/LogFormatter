@@ -1,0 +1,6 @@
+@LogsFormatter_HostAddress = http://localhost:5276
+
+GET {{LogsFormatter_HostAddress}}/products/
+Accept: application/json
+
+###
