@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogsFormatter", "src\LogsFormatter.csproj", "{CE7DE7BA-3A1D-4DBE-AA7F-571802441421}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogsFormatterTests", "tests\LogsFormatterTests.csproj", "{EAD44E74-474D-46ED-A1C6-C2108C3339BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{CE7DE7BA-3A1D-4DBE-AA7F-571802441421}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE7DE7BA-3A1D-4DBE-AA7F-571802441421}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE7DE7BA-3A1D-4DBE-AA7F-571802441421}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAD44E74-474D-46ED-A1C6-C2108C3339BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAD44E74-474D-46ED-A1C6-C2108C3339BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAD44E74-474D-46ED-A1C6-C2108C3339BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAD44E74-474D-46ED-A1C6-C2108C3339BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

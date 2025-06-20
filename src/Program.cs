@@ -5,17 +5,20 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var fieldMapping = new Dictionary<string, string>
+{
+    { "TraceId", "trace_id" },
+    { "SpanId", "span_id" },
+    { "RequestId", "request_id" }
+};
+
 // Serilog Configuration
 builder.Host.UseSerilog((context, services, configuration) =>
 {
     configuration
         .ReadFrom.Configuration(context.Configuration)
         .Enrich.With<LogEnricher>()
-        .WriteTo.Console(new ControlledFieldsJsonFormatter([
-            "RequestId",
-            "TraceId",
-            "SpanId"
-        ]));
+        .WriteTo.Console(new MappedFieldsJsonFormatter(fieldMapping));
 });
 
 builder.Services.AddEndpointsApiExplorer();

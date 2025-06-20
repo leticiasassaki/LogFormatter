@@ -24,6 +24,7 @@ Sample ASP.NET Core project demonstrating structured log formatting with **Seril
 - **Custom console formatters**:
   - `ControlledFieldsJsonFormatter`: Filters which fields appear in the JSON log, pushing any unexpected fields into the message string
   - `SnakeCaseJsonFormatter`: Converts all field names in the JSON log to **snake_case**
+  - `MappedFieldsJsonFormatter`: Allows renaming fields based on a predefined mapping
 - **OpenTelemetry Tracing** for distributed tracing (OTLP exporter ready)
 - Automatic HTTP request instrumentation with trace correlation
 - Interactive API documentation available via **Swagger UI**
@@ -77,6 +78,7 @@ dotnet run --project src/LogsFormatter.csproj
 | `LogsConfiguration/LogEnricher.cs`                   | Custom log enricher (for TraceId, SpanId, etc)                                    |
 | `LogsConfiguration/ControlledFieldsJsonFormatter.cs` | Custom Serilog JSON formatter that filters specific fields                        |
 | `LogsConfiguration/SnakeCaseJsonFormatter.cs`        | Custom Serilog JSON formatter that converts all property names to **snake\_case** |
+| `LogsConfiguration/MappedFieldsJsonFormatter.cs`     | Custom Serilog JSON formatter that renames fields based on a provided mapping     |
 
 ---
 
@@ -148,11 +150,54 @@ Log.Logger = new LoggerConfiguration()
 }
 ```
 
+---
+
+## 🏷️ Using MappedFieldsJsonFormatter
+
+If you want to **rename specific fields** before outputting them in your JSON logs, use the `MappedFieldsJsonFormatter`.
+
+### What it does:
+
+* Receives a **dictionary of field name mappings** (original name → new name)
+* Outputs the renamed fields in the `fields` section
+* Any non-mapped fields are automatically appended as plain text inside the `message` (under **ExtraFields**)
+
+### Configuration Example in `Program.cs`:
+
+```csharp
+var fieldMapping = new Dictionary<string, string>
+{
+    { "TraceId", "trace_id" },
+    { "SpanId", "span_id" },
+    { "RequestId", "request_id" }
+};
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builtConfig)
+    .WriteTo.Console(new MappedFieldsJsonFormatter(fieldMapping))
+    .CreateLogger();
+```
+
+### Example Output:
+
+```json
+{
+  "@timestamp": "2025-06-19T15:20:00.123Z",
+  "level": "Information",
+  "message": "HTTP GET /products responded 200 in 18ms | ExtraFields: MachineName=PC123, Environment=Development",
+  "fields": {
+    "trace_id": "abc123",
+    "span_id": "def456",
+    "request_id": "req789"
+  }
+}
+```
+
 ### Benefits:
 
-* Keeps logs clean and focused
-* Ensures that unexpected fields **don’t break downstream processing**
-* Preserves all information
+* Allows precise control over **field naming**
+* Makes it easy to adapt to **external log ingestion systems** with naming conventions
+* Maintains any unexpected fields as part of the log message
 
 ---
 
@@ -160,6 +205,7 @@ Log.Logger = new LoggerConfiguration()
 
 * Logs are emitted in **JSON format**, making them easily parsable by observability tools like **ElasticSearch**, **Seq**, or **OpenTelemetry Collectors**.
 * The project is **pre-configured for OTLP trace export**, ready to integrate with systems like **Jaeger**, **Zipkin**, or **Grafana Tempo**.
-* Two customizable formatters are available:
+* Three customizable formatters are available:
   * ✅ **ControlledFieldsJsonFormatter** → Filters specific fields
   * ✅ **SnakeCaseJsonFormatter** → Converts all field names to **snake\_case**
+  * ✅ **MappedFieldsJsonFormatter** → Renames fields based on a custom mapping dictionary
